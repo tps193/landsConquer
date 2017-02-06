@@ -11,15 +11,17 @@ public class Tile {
 	private Map<SectorPosition, TerritoryUnit> sectors = new HashMap<>();
 	private Map<Position, TerritoryUnit> roads = new HashMap<>();
 	
-	public void addSector(SectorPosition position, TerritoryUnit unit) {
+	public Tile addSector(SectorPosition position, TerritoryUnit unit) {
 		sectors.put(position, unit);
+		return this;
 	}
 	
-	public void addRoad(Position position, TerritoryUnit road) {
+	public Tile addRoad(Position position, TerritoryUnit road) {
 		if (road.getType() != TerritoryUnitType.ROAD) {
 			throw new IllegalArgumentException("The Road type only is expected");
 		}
 		roads.put(position, road);
+		return this;
 	}
 	
 	public boolean canConcatWithBy(Tile other, Position primarySectorPosition) {
@@ -40,6 +42,17 @@ public class Tile {
 			result &= myRoad.getType() == otherRoad.getType();
 		}
 		return result;
+	}
+	
+	public void rotate() {
+		Map<SectorPosition, TerritoryUnit> newSectorsMap = new HashMap<>();
+		sectors.forEach((position, unit) -> newSectorsMap.put(new SectorPosition(position.primary.rotate(), position.secondary.rotate()), unit));
+		sectors = newSectorsMap;
+		
+		Map<Position, TerritoryUnit> newRoadsMap = new HashMap<>();
+		roads.forEach((position, unit) -> newRoadsMap.put(position.rotate(), unit));
+		roads = newRoadsMap;
+		
 	}
 	
 	public static class SectorPosition {
