@@ -8,36 +8,33 @@ public class WorldMap {
 
 	
 	public boolean canPutTileTo(int x, int y, Tile tile) {
-		
+		if (tile == null) {
+			return false;
+		}
+		if (grid.get(new Point(x,y)) != null) {
+			return false;
+		}
+		boolean result = true;
+		boolean noNeighbours = true;
+		for (Position position : Position.values()) {
+			Point positionShift = position.getNeighbourPointShift();
+			Tile existing = grid.get(new Point(x + positionShift.getX(), y + positionShift.getY()));
+			noNeighbours = noNeighbours && existing == null;
+			result = result && (existing == null ? true : tile.canConcatWithBy(existing, position));
+		}
+		if (result && noNeighbours) {
+			return grid.size() == 0;
+		}
+		return result;
+	}
+	
+	public boolean putTileTo(int x, int y, Tile tile) {
+		if (canPutTileTo(x, y, tile)) {
+			grid.put(new Point(x,y), tile);
+			return true;
+		}
 		return false;
 	}
 	
-	public static class Point {
-		private int x, y;
-		
-		public Point(int x, int y) {
-			this.x = x;
-			this.y = y;
-		}
-		
-		@Override
-		public int hashCode() {
-			int result = 17;
-			result = 17 * result + x;
-			result = 17 * result + y;
-			return result;
-		}
-		
-		@Override
-		public boolean equals(Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			if (obj instanceof Point) {
-				Point other = (Point) obj;
-				return x == other.x && y == other.y;
-			}
-			return false;
-		}
-	}
+	
 }

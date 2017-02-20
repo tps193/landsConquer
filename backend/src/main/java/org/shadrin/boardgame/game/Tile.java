@@ -8,10 +8,16 @@ import org.shadrin.boardgame.game.units.TerritoryUnit;
 import org.shadrin.boardgame.game.units.TerritoryUnitType;
 
 public class Tile {
-	private Map<SectorPosition, TerritoryUnit> sectors = new HashMap<>();
-	private Map<Position, TerritoryUnit> roads = new HashMap<>();
+	//TODO: check if the capicity=8,loadfactor=1.0 will help to have the map with the permanent size
+	private Map<SectorPosition, TerritoryUnit> sectors = new HashMap<>(8, 1.0f);
+	//TODO: the same for roads
+	private Map<Position, TerritoryUnit> roads = new HashMap<>(4, 1.0f);
+	private boolean hasMonastery = false;
 	
 	public Tile addSector(SectorPosition position, TerritoryUnit unit) {
+		if (unit.getType() != TerritoryUnitType.FIELD && unit.getType() != TerritoryUnitType.CITY) {
+			throw new IllegalArgumentException("The Field or City type only is expected");
+		}
 		sectors.put(position, unit);
 		return this;
 	}
@@ -52,10 +58,13 @@ public class Tile {
 		Map<Position, TerritoryUnit> newRoadsMap = new HashMap<>();
 		roads.forEach((position, unit) -> newRoadsMap.put(position.rotate(), unit));
 		roads = newRoadsMap;
-		
 	}
 	
 	public static class SectorPosition {
+		/*
+		 * TODO: we have only 8 different SectorPositions so maybe it is better to cache them and store in some map
+		 * instead of create new one every time we need it.
+		 */
 		private Position primary;
 		private Position secondary;
 		
@@ -79,8 +88,8 @@ public class Tile {
 		@Override
 		public int hashCode() {
 			int result = 17;
-			result = result * 17 + primary.hashCode();
-			result = result * 17 + secondary.hashCode();
+			result = result * 17 + (primary != null ? primary.hashCode() : 0);
+			result = result * 17 + (secondary != null ? secondary.hashCode() : 0);
 			return result;
 		}
 	}

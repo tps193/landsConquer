@@ -21,9 +21,21 @@ public enum Position {
 		return subindexMap.get(this);
 	}
 	
+	public Point getNeighbourPointShift() {
+		return positionToNeighbourPointMap.get(this);
+	}
+	
 	private static Map<Position, Position> oppositeElements = new HashMap<>();
 	private static Map<Position, Position> rotateMap = new HashMap<>();
 	private static Map<Position, List<Position>> subindexMap = new HashMap<>();
+	private static Map<Position, Point> positionToNeighbourPointMap = new HashMap<>();
+	
+	private static void initNeighbourPoints() {
+		positionToNeighbourPointMap.put(TOP, new Point(0, 1));
+		positionToNeighbourPointMap.put(RIGHT, new Point(1, 0));
+		positionToNeighbourPointMap.put(BOTTOM, new Point(0, -1));
+		positionToNeighbourPointMap.put(LEFT, new Point(-1, 0));
+	}
 	
 	private static void initOppositePair(Position first, Position second) {
 		oppositeElements.put(first, second);
@@ -47,6 +59,8 @@ public enum Position {
 	static {
 		initOppositePair(TOP, BOTTOM);
 		initOppositePair(LEFT, RIGHT);
+		
+		initNeighbourPoints();
 		
 		//XXX: absolutely crazy applying of the Function interface. Code is unreadable. Used here just to play with Java 8 features.
 //		initRotateElement(TOP).andThen(addRotateElement(BOTTOM)).andThen(addRotateElement(LEFT)).andThen(addRotateElement(TOP)).apply(RIGHT);

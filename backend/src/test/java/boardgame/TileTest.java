@@ -16,7 +16,7 @@ public class TileTest {
 	public void setUp() throws Exception {
 	}
 	
-	private Tile generateStartTile() {
+	public static Tile generateStartTile() {
 		Tile startTile = new Tile();
 		startTile.addSector(new SectorPosition(Position.TOP, Position.LEFT), new TerritoryUnit(1, 0.5f, TerritoryUnitType.CITY));
 		startTile.addSector(new SectorPosition(Position.TOP, Position.RIGHT), new TerritoryUnit(1, 0.5f, TerritoryUnitType.CITY));
